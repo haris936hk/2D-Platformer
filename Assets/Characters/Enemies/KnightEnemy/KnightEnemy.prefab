@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12aa96997fc84c847ac9070ecfd247f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  detectedColliders: []
 --- !u!1 &6414800367545458053
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,6 +256,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 3
+  attackZone: {fileID: 1116557496520755958}
+  _hasTarget: 0
 --- !u!114 &5587340684444984072
 MonoBehaviour:
   m_ObjectHideFlags: 0
