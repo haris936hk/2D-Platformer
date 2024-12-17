@@ -4,26 +4,51 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections))]
 public class PlayerController : MonoBehaviour
 {
     public float walkSpeed =5f;
     public float runSpeed =8f;
+    public float airWalkSpeed = 3f;
+    private float jumpImpulse= 10f;
     Vector2 moveInput;
+    TouchingDirections touchingDirections;
 
-    public float CurrentMoveSpeed { get{
-        if(IsMoving){
-            if(IsRunning){
-                return runSpeed;
+  public float CurrentMoveSpeed
+{
+    get
+    {
+        if(CanMove){
+        // Check if the player is moving
+        if (IsMoving)
+        {
+            // If touching the wall and moving towards it, halt or reduce speed
+            if (touchingDirections.IsOnWall && moveInput.x != 0)
+            {
+                return 0; // You can set a reduced speed here if desired
             }
-            else{
-                return walkSpeed;
+
+            // If the player is not grounded, use airWalkSpeed
+            if (!touchingDirections.IsGrounded)
+            {
+                return airWalkSpeed;
             }
-        } else{
+
+            // Default movement: running or walking
+            return IsRunning ? runSpeed : walkSpeed;
+        }
+        else
+        {
+            return 0; // Not moving
+        }
+        }
+        else{
             return 0;
         }
     }
-    }
+}
+
+
 
     [SerializeField]
     public bool _isMoving = false;
@@ -61,13 +86,21 @@ public class PlayerController : MonoBehaviour
         _isFacingRight=value;
     } }
 
+    public bool CanMove{ get
+    {
+        return animator.GetBool(AnimationStrings.canMove);
+    }
+    }
+
     Rigidbody2D rb;
 
     Animator animator;
+    
 
     private void Awake(){
         rb = GetComponent<Rigidbody2D>();
         animator =GetComponent<Animator>();
+        touchingDirections =GetComponent<TouchingDirections>();
     }
 
     // Start is called before the first frame update
@@ -83,6 +116,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate(){
         rb.velocity = new Vector2(moveInput.x * CurrentMoveSpeed, rb.velocity.y);
+
+        animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
     }
 
 public void OnMove(InputAction.CallbackContext context){
@@ -110,6 +145,21 @@ SetFacingDirection(moveInput);
         IsRunning = false;
     }
 
+    }
+    public void OnJump(InputAction.CallbackContext context){
+        // check if alive
+        if(context.started && touchingDirections.IsGrounded){
+            animator.SetTrigger(AnimationStrings.jumpTrigger);
+            rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
+        }
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if(context.started)
+        {
+            animator.SetTrigger(AnimationStrings.attackTrigger);
+        }
     }
 
 }
