@@ -9745,7 +9745,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3064622548152994808, guid: 3358850549f9e8a4ab908373b3931f27, type: 3}
       propertyPath: walkSpeed
-      value: 1
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064622548152994808, guid: 3358850549f9e8a4ab908373b3931f27, type: 3}
+      propertyPath: _hasTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6414800367545458053, guid: 3358850549f9e8a4ab908373b3931f27, type: 3}
       propertyPath: m_Name
